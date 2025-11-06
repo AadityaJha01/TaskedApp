@@ -3,6 +3,16 @@
 
 set -euo pipefail
 
+if ! aws sts get-caller-identity >/dev/null 2>&1; then
+  cat <<'EOF' >&2
+[access.sh] AWS credentials are missing or invalid.
+Export AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY (and optionally AWS_SESSION_TOKEN),
+configure a default profile via 'aws configure', or ensure the instance role has
+EKS access before running this script.
+EOF
+  exit 1
+fi
+
 CLUSTER_NAME="${CLUSTER_NAME:-tasked-cluster}"
 AWS_REGION="${AWS_REGION:-us-east-1}"
 

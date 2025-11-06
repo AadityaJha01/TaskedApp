@@ -5,6 +5,21 @@ module "eks" {
   cluster_name                   = local.name
   cluster_endpoint_public_access = true
 
+  access_entries = {
+    jenkins = {
+      principal_arn = "arn:aws:iam::215764924067:user/Yagyansh-Khandelwal"
+
+      access_policy_associations = {
+        admin = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
+          }
+        }
+      }
+    }
+  }
+
   cluster_addons = {
     coredns = {
       most_recent = true
@@ -26,7 +41,7 @@ module "eks" {
       max_size     = 4
       desired_size = 2
 
-      instance_types = ["t2.medium"]
+      instance_types = ["c7i-flex.large"]
       capacity_type  = "SPOT"
 
       tags = {
